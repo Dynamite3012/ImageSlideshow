@@ -7,6 +7,11 @@
 
 import UIKit
 
+protocol ZoomingDelegate: class {
+    func beginZooming()
+    func endZooming()
+}
+
 /// Used to wrap a single slideshow item and allow zooming on it
 @objcMembers
 open class ImageSlideshowItem: UIScrollView, UIScrollViewDelegate {
@@ -30,7 +35,9 @@ open class ImageSlideshowItem: UIScrollView, UIScrollViewDelegate {
     open var zoomInInitially = false
     
     /// Maximum zoom scale
-    open var maximumScale: CGFloat = 2.0
+    open var maximumScale: CGFloat
+
+    weak var zoomingDelegate: ZoomingDelegate?
 
     fileprivate var lastFrame = CGRect.zero
     fileprivate var imageReleased = false
@@ -50,7 +57,7 @@ open class ImageSlideshowItem: UIScrollView, UIScrollViewDelegate {
         - parameter image: Input Source to load the image
         - parameter zoomEnabled: holds if it should be possible to zoom-in the image
     */
-    init(image: InputSource, zoomEnabled: Bool, activityIndicator: ActivityIndicatorView? = nil, maximumScale: CGFloat = 2.0) {
+    init(image: InputSource, zoomEnabled: Bool, activityIndicator: ActivityIndicatorView? = nil, maximumScale: CGFloat) {
         self.zoomEnabled = zoomEnabled
         self.image = image
         self.activityIndicator = activityIndicator
@@ -65,6 +72,7 @@ open class ImageSlideshowItem: UIScrollView, UIScrollViewDelegate {
 
         // scroll view configuration
         delegate = self
+
         showsVerticalScrollIndicator = false
         showsHorizontalScrollIndicator = false
         addSubview(imageView)
@@ -163,12 +171,15 @@ open class ImageSlideshowItem: UIScrollView, UIScrollViewDelegate {
 
     func zoomOut() {
         self.setZoomScale(minimumZoomScale, animated: false)
+        zoomingDelegate?.endZooming()
     }
 
     @objc func tapZoom() {
         if isZoomed() {
+            zoomingDelegate?.endZooming()
             self.setZoomScale(minimumZoomScale, animated: true)
         } else {
+            zoomingDelegate?.beginZooming()
             self.setZoomScale(maximumZoomScale, animated: true)
         }
     }
@@ -194,7 +205,7 @@ open class ImageSlideshowItem: UIScrollView, UIScrollViewDelegate {
     }
 
     fileprivate func calculateMaximumScale() -> CGFloat {
-        return maximumScale
+        return screenSize().height / imageView.bounds.height
     }
 
     fileprivate func setPictoCenter() {

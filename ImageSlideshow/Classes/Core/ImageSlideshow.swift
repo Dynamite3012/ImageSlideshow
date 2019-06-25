@@ -176,7 +176,7 @@ open class ImageSlideshow: UIView {
     }
     
     /// Maximum zoom scale
-    open var maximumScale: CGFloat = 2.0 {
+    open var maximumScale: CGFloat = 100.0 {
         didSet {
             reloadScrollView()
         }
@@ -318,6 +318,7 @@ open class ImageSlideshow: UIView {
         for image in scrollViewImages {
             let item = ImageSlideshowItem(image: image, zoomEnabled: zoomEnabled, activityIndicator: activityIndicator?.create(), maximumScale: maximumScale)
             item.imageView.contentMode = contentScaleMode
+            item.zoomingDelegate = self
             slideshowItems.append(item)
             scrollView.addSubview(item)
             i += 1
@@ -586,4 +587,24 @@ extension ImageSlideshow: UIScrollViewDelegate {
     public func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
         isAnimating = false
     }
+}
+
+extension ImageSlideshow: ZoomingDelegate {
+    open func beginZooming() {
+        UIView.animate(withDuration: 0.2, delay: 0, options: [], animations: {
+            self.pageIndicator?.view.alpha = 0
+        }, completion: { _ in
+            self.pageIndicator?.view.isHidden = true
+        })
+    }
+
+    open func endZooming() {
+        UIView.animate(withDuration: 0.2, delay: 0, options: [], animations: {
+            self.pageIndicator?.view.alpha = 1
+        }, completion: { _ in
+            self.pageIndicator?.view.isHidden = false
+        })
+    }
+
+
 }
