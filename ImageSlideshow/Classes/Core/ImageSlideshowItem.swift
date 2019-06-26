@@ -235,7 +235,7 @@ open class ImageSlideshowItem: UIScrollView, UIScrollViewDelegate {
     }
 
     open func scrollViewDidEndZooming(_ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat) {
-        if !isZoomed() {
+        if zoomScale <= minimumZoomScale {
             zoomingDelegate?.endZooming()
         }
     }
