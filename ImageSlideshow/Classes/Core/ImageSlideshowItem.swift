@@ -171,15 +171,12 @@ open class ImageSlideshowItem: UIScrollView, UIScrollViewDelegate {
 
     func zoomOut() {
         self.setZoomScale(minimumZoomScale, animated: false)
-        zoomingDelegate?.endZooming()
     }
 
     @objc func tapZoom() {
         if isZoomed() {
-            zoomingDelegate?.endZooming()
             self.setZoomScale(minimumZoomScale, animated: true)
         } else {
-            zoomingDelegate?.beginZooming()
             self.setZoomScale(maximumZoomScale, animated: true)
         }
     }
@@ -228,6 +225,10 @@ open class ImageSlideshowItem: UIScrollView, UIScrollViewDelegate {
 
     open func scrollViewDidZoom(_ scrollView: UIScrollView) {
         setPictoCenter()
+    }
+
+    open func scrollViewWillBeginZooming(_ scrollView: UIScrollView, with view: UIView?) {
+        zoomingDelegate?.beginZooming()
     }
 
     open func scrollViewDidEndZooming(_ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat) {
