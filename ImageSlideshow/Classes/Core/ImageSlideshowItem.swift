@@ -214,7 +214,6 @@ open class ImageSlideshowItem: UIScrollView, UIScrollViewDelegate {
         intendHorizon = intendHorizon > 0 ? intendHorizon : 0
         intendVertical = intendVertical > 0 ? intendVertical : 0
         contentInset = UIEdgeInsets(top: intendVertical, left: intendHorizon, bottom: intendVertical, right: intendHorizon)
-        zoomingDelegate?.endZooming()
     }
 
     private func isFullScreen() -> Bool {
