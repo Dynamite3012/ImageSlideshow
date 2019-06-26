@@ -228,6 +228,7 @@ open class ImageSlideshowItem: UIScrollView, UIScrollViewDelegate {
 
     open func scrollViewDidZoom(_ scrollView: UIScrollView) {
         setPictoCenter()
+        zoomingDelegate?.endZooming()
     }
 
     open func viewForZooming(in scrollView: UIScrollView) -> UIView? {
