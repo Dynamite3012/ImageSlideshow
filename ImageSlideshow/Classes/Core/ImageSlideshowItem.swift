@@ -171,13 +171,16 @@ open class ImageSlideshowItem: UIScrollView, UIScrollViewDelegate {
 
     func zoomOut() {
         self.setZoomScale(minimumZoomScale, animated: false)
+        zoomingDelegate?.endZooming()
     }
 
     @objc func tapZoom() {
         if isZoomed() {
             self.setZoomScale(minimumZoomScale, animated: true)
+            zoomingDelegate?.beginZooming()
         } else {
             self.setZoomScale(maximumZoomScale, animated: true)
+            zoomingDelegate?.endZooming()
         }
     }
 
@@ -211,6 +214,7 @@ open class ImageSlideshowItem: UIScrollView, UIScrollViewDelegate {
         intendHorizon = intendHorizon > 0 ? intendHorizon : 0
         intendVertical = intendVertical > 0 ? intendVertical : 0
         contentInset = UIEdgeInsets(top: intendVertical, left: intendHorizon, bottom: intendVertical, right: intendHorizon)
+        zoomingDelegate?.endZooming()
     }
 
     private func isFullScreen() -> Bool {
@@ -225,14 +229,6 @@ open class ImageSlideshowItem: UIScrollView, UIScrollViewDelegate {
 
     open func scrollViewDidZoom(_ scrollView: UIScrollView) {
         setPictoCenter()
-    }
-
-    open func scrollViewWillBeginZooming(_ scrollView: UIScrollView, with view: UIView?) {
-        zoomingDelegate?.beginZooming()
-    }
-
-    open func scrollViewDidEndZooming(_ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat) {
-        zoomingDelegate?.endZooming()
     }
 
     open func viewForZooming(in scrollView: UIScrollView) -> UIView? {
